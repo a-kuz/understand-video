@@ -33,14 +33,13 @@ missing, the transcript is marked `unavailable` and frames + OCR still work.
 ## Install
 
 ```bash
-npx skills add a-kuz/understand-video@understand-video -g -y
+npx skills add a-kuz/understand-video -g -y
 ```
 
 Or clone into a skills directory:
 
 ```bash
-git clone https://github.com/a-kuz/understand-video ~/.claude/skills/understand-video-repo
-# point your agent at understand-video/SKILL.md
+git clone https://github.com/a-kuz/understand-video ~/.claude/skills/understand-video
 ```
 
 ## Dependencies (auto-installed on first run)
@@ -76,8 +75,7 @@ Give it a file and a question, e.g.:
 
 > what text is on screen in screen-rec.mkv?
 
-Internals and parameters are documented in
-[`understand-video/SKILL.md`](understand-video/SKILL.md).
+Internals and parameters are documented in [`SKILL.md`](SKILL.md).
 
 ## License
 
