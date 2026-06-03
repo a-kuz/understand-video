@@ -1,5 +1,5 @@
 ---
-name: video-breakdown
+name: understand-video
 description: >-
   Analyze a local video file: understand what is in it and answer the user's
   request. Internally builds three time-aligned tracks (on-screen text / OCR,
@@ -7,12 +7,12 @@ description: >-
   material, but returns a finished analysis tailored to the request, not tables.
   Use when the user gives a path to a video (.mp4/.mov/.mkv/.webm) and asks to
   describe, transcribe, find a moment, extract on-screen text/speech, or
-  understand the plot. Triggers: "analyze video", "what's in this video",
-  "transcribe this clip", "video breakdown". Works with any language (speech is
-  auto-detected; the reply matches the user's language).
+  understand the plot. Triggers: "analyze video", "understand video", "what's in
+  this video", "transcribe this clip", "read this video". Works with any language
+  (speech is auto-detected; the reply matches the user's language).
 ---
 
-# Video breakdown
+# Understand video
 
 Analyzes a video and **answers the user's request** with finished prose.
 Internally it builds three tracks on a timeline (on-screen text / visual
@@ -29,12 +29,12 @@ The helper scripts `extract.sh` and `filmstrip.sh` live **next to this SKILL.md*
 (same folder). Below, `<SKILL_DIR>` is the absolute path to that folder;
 substitute it into the commands (the main loop knows where the skill was loaded
 from). If unsure of the path, find it:
-`find ~/.claude -name extract.sh -path '*video-breakdown*'` (or check a
+`find ~/.claude -name extract.sh -path '*understand-video*'` (or check a
 project-local `.claude/skills/`).
 
 ## How to run (IMPORTANT)
 
-**Do not perform the breakdown yourself in the main conversation.** Delegate
+**Do not analyze the video yourself in the main conversation.** Delegate
 immediately to a background agent via the Agent tool:
 
 - `subagent_type: "general-purpose"`
@@ -45,10 +45,10 @@ immediately to a background agent via the Agent tool:
   **full agent instruction** from the block below. The request is key: the agent
   answers it, it does not dump tables.
 
-Tell the user briefly: "Started the breakdown in the background, I'll send the
-result." When the `<task-notification>` of completion arrives — show the agent's
-finished analysis to the user (this is the answer to their request; the agent
-does not return raw tracks).
+Tell the user briefly: "Started analyzing the video in the background, I'll send
+the result." When the `<task-notification>` of completion arrives — show the
+agent's finished analysis to the user (this is the answer to their request; the
+agent does not return raw tracks).
 
 **After the analysis — show the filmstrip (this is done by the MAIN
 conversation, not the subagent).** The agent returns `WORK=<path>` as its last
@@ -57,16 +57,16 @@ line (the working folder; it does NOT delete it). The main conversation runs:
 bash "<SKILL_DIR>/filmstrip.sh" "<WORK>"   # ANSI into the user's terminal
 rm -rf "<WORK>"                            # then clean up
 ```
-The filmstrip is colored ANSI output to the user's live terminal (6 key frames
-in a row with timecodes). It cannot be "shown" from a background agent, so it is
-always run in the main conversation.
+The filmstrip is colored ANSI output to the user's live terminal (key frames in
+a row with timecodes; frame count and width adapt to the terminal). It cannot be
+"shown" from a background agent, so it is always run in the main conversation.
 
 Mode: **standard** by default. **ultra** — only if the user explicitly asks for
 motion/dynamics analysis (then pass the agent the `--ultra` flag).
 
 ## Subagent prompt (template)
 
-> Analyze the video `<ABSOLUTE_PATH>` per the video-breakdown skill.
+> Analyze the video `<ABSOLUTE_PATH>` per the understand-video skill.
 > **User's request:** "<WHAT THE USER ASKED, verbatim or close>"
 > (if the user just gave a file with no details — treat the request as "describe
 > what's in this video"). Your goal is to answer that request, not to emit
@@ -143,9 +143,12 @@ https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-large-v3-turbo.bi
 ## Filmstrip (filmstrip.sh)
 
 A preview strip for the user's live terminal (not a file, ANSI output):
-- 6 key frames in one row: first, last + 4 evenly-spaced in between;
+- key frames in one row (default 4: first, last + evenly-spaced in between);
+- **width adapts to the terminal** — frame width = terminal cols / N, all frames
+  equal width, rows stay aligned; a narrow terminal reduces N automatically;
 - frames drawn by `chafa -f symbols` (text blocks); film perforation `▦`,
   borders `│` and timecodes under frames composed as ANSI text;
 - no transcript on the strip (that's only in the text report);
 - run by the MAIN conversation: `filmstrip.sh "<WORK>"`. Needs `chafa`
-  (installed automatically). Tuning: env `N` (frames), `FW`/`FH`, `FILM` colors.
+  (installed automatically). Tuning: env `N` (frames), `COLS` (override width),
+  `FW`/`FH` (force frame size), `FILM` colors.

@@ -1,4 +1,4 @@
-# video-breakdown
+# understand-video
 
 A Claude Code / agent **Skill** that analyzes a local video file and answers a
 user's question about it. Give it a path to an `.mp4 / .mov / .mkv / .webm` and
@@ -7,8 +7,8 @@ transcribe speech, find a moment by timecode, or pull text off the screen.
 
 Internally it builds three time-aligned tracks — on-screen text (OCR), the
 visual sequence (frames), and the audio transcript — and synthesizes an answer
-from them. It also prints a filmstrip (six key frames with timecodes) as ANSI
-directly in the terminal.
+from them. It also prints a filmstrip (key frames with timecodes) as ANSI
+directly in the terminal, sized to the terminal width.
 
 The skill replies in the user's language; the documentation here is in English.
 
@@ -22,8 +22,8 @@ The skill replies in the user's language; the documentation here is in English.
 2. A background subagent reads the frames, builds the three internal tracks, and
    synthesizes an answer to the query. Frame images stay in the subagent's
    context, not the main thread.
-3. The main thread renders the filmstrip to the terminal, then cleans up the
-   working directory.
+3. The main thread renders the filmstrip to the terminal (frame count and width
+   adapt to the terminal), then cleans up the working directory.
 
 Notes: local files only (no URL download), fixed-fps sampling (no scene
 detection). Auto-install uses the detected package manager — `brew` on macOS,
@@ -33,14 +33,14 @@ missing, the transcript is marked `unavailable` and frames + OCR still work.
 ## Install
 
 ```bash
-npx skills add a-kuz/video-breakdown@video-breakdown -g -y
+npx skills add a-kuz/understand-video@understand-video -g -y
 ```
 
 Or clone into a skills directory:
 
 ```bash
-git clone https://github.com/a-kuz/video-breakdown ~/.claude/skills/video-breakdown-repo
-# point your agent at video-breakdown/SKILL.md
+git clone https://github.com/a-kuz/understand-video ~/.claude/skills/understand-video-repo
+# point your agent at understand-video/SKILL.md
 ```
 
 ## Dependencies (auto-installed on first run)
@@ -77,7 +77,7 @@ Give it a file and a question, e.g.:
 > what text is on screen in screen-rec.mkv?
 
 Internals and parameters are documented in
-[`video-breakdown/SKILL.md`](video-breakdown/SKILL.md).
+[`understand-video/SKILL.md`](understand-video/SKILL.md).
 
 ## License
 

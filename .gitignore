@@ -1,4 +1,3 @@
 # whisper/ffmpeg working dirs created next to a processed video
 **/*-breakdown/
-!/video-breakdown/
 .DS_Store
